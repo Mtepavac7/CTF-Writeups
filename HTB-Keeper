@@ -1,3 +1,5 @@
 This write-up covers the Keeper machine from Hack The Box. The box focuses on basic enumeration, credential discovery through a helpdesk system, and privilege escalation via a KeePass database vulnerability
 
 ![Test Image 5](https://github.com/Mtepavac7/CTF-Writeup/blob/1b40eea152bcf9d4a6d43376dc668a379719a7da/pingthetarger.png)
+
+![image5](https://github.com/Mtepavac7/CTF-Writeup/blob/7c2f0358089c195e975680302b8a5d95014daf69/nmap%20run.png)
