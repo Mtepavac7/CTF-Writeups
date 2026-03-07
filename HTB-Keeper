@@ -1,0 +1,3 @@
+This write-up covers the Keeper machine from Hack The Box. The box focuses on basic enumeration, credential discovery through a helpdesk system, and privilege escalation via a KeePass database vulnerability
+
+![]()
