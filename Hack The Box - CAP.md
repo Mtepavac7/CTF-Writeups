@@ -1,7 +1,6 @@
 # HTB — Cap Writeup
 
 **Platform:** Hack The Box  
-**Difficulty:** Easy  
 **Tags:** `nmap` `idor` `wireshark` `ftp` `ssh` `linpeas` `python` `capabilities` `setuid`
 
 ---
